@@ -36,15 +36,19 @@
 
 html {
   scroll-behavior: auto;
+  /* Avoid left jump when scrollbar appears after loader / Lenis */
+  scrollbar-gutter: stable;
+  overflow-x: clip;
 }
 
 body {
   min-width: 320px;
   min-height: 100vh;
+  overflow-x: clip;
 }
 
 img,
-canvas {
+video {
   display: block;
   max-width: 100%;
 }

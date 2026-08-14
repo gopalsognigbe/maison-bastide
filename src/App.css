@@ -2,9 +2,10 @@
   min-height: 100vh;
   background: var(--roast);
   color: var(--paper);
+  overflow-x: clip;
 }
 
-/* ——— Loader A2 ——— */
+/* ——— Loader A2 (video buffer) ——— */
 .loader {
   position: fixed;
   inset: 0;
@@ -79,6 +80,21 @@
   color: var(--bean);
 }
 
+.loader__track {
+  width: 7rem;
+  height: 1px;
+  background: rgba(237, 233, 227, 0.15);
+  overflow: hidden;
+}
+
+.loader__bar {
+  height: 100%;
+  width: 0%;
+  background: var(--bean);
+  transform-origin: left center;
+  will-change: width;
+}
+
 @media (max-width: 767px) {
   .loader__stack {
     gap: 1rem;
@@ -92,6 +108,10 @@
   .loader__brand {
     font-size: 0.58rem;
     letter-spacing: 0.22em;
+  }
+
+  .loader__track {
+    width: 5.5rem;
   }
 
   .loader__glow {
@@ -113,6 +133,12 @@
   .loader__brand--on {
     animation: none;
   }
+}
+
+html.app--loading,
+html.app--loading body {
+  overflow: hidden;
+  scrollbar-gutter: stable;
 }
 
 /* ——— Nav ——— */
@@ -140,6 +166,36 @@
   background: rgba(20, 17, 16, 0.45);
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
+}
+
+.nav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.nav__lang {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper);
+  padding: 0.45rem 0.7rem;
+  border: 1px solid rgba(237, 233, 227, 0.22);
+  border-radius: 999px;
+  background: transparent;
+  transition: border-color 0.25s ease, color 0.25s ease, background 0.25s ease;
+}
+
+.nav__lang:hover {
+  border-color: var(--bean);
+  color: var(--bean);
+}
+
+.nav__lang:focus-visible {
+  outline: 2px solid var(--bean);
+  outline-offset: 3px;
 }
 
 .nav__logo {
@@ -175,21 +231,22 @@
   color: var(--roast);
 }
 
-/* ——— Hero ——— */
+/* ——— Hero (scroll runway → video scrub) ——— */
 .hero {
   position: relative;
-  /* ~1.4 viewports of scrub — after title 4, ≤ ~2 scrolls to next section */
-  height: 240vh;
+  /* ~2 viewport-scrolls after T4/T5 (was 380vh ≈ 4+) */
+  height: 250vh;
   background: var(--roast);
 }
 
 @media (max-width: 767px) {
   .hero {
-    height: 180vh;
+    height: 210vh;
   }
 }
 
-.app--reduced-motion .hero {
+.app--reduced-motion .hero,
+.hero--reduced {
   height: 100vh;
 }
 
@@ -215,19 +272,23 @@
 
 .hero__stage {
   position: absolute;
-  inset: -6%;
-  width: 112%;
-  height: 112%;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  max-width: none;
   will-change: transform;
+  transform-origin: center center;
 }
 
-.hero__canvas {
+.hero__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
+  object-fit: cover;
+  object-position: center;
   background: var(--roast);
-  contain: strict;
+  pointer-events: none;
 }
 
 .hero__gradient {
@@ -266,6 +327,7 @@
 .hero__beats {
   position: absolute;
   z-index: 2;
+  user-select: none;
   left: clamp(1.5rem, 5vw, 3.5rem);
   /* Keep clear of coffee rail + safe inset from edges */
   right: clamp(3.25rem, 12vw, 5.5rem);
@@ -445,12 +507,14 @@
 }
 
 html.app--hero-scroll {
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
 html.app--hero-scroll::-webkit-scrollbar {
   width: 0;
   height: 0;
+  background: transparent;
 }
 
 .reveal {
@@ -496,13 +560,13 @@ html.app--hero-scroll::-webkit-scrollbar {
   display: none;
   align-items: center;
   gap: 0.45rem;
-  padding: 0.4rem 0.6rem;
+  padding: 0.4rem 0.65rem;
   margin: 0.55rem 0 0 0.7rem;
   background: rgba(20, 17, 16, 0.82);
   border: 1px solid rgba(237, 233, 227, 0.22);
   font-family: var(--font-mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.16em;
+  font-size: 0.55rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--paper);
   white-space: nowrap;
@@ -521,6 +585,7 @@ html.app--hero-scroll::-webkit-scrollbar {
   border-radius: 50%;
   background: var(--bean);
   flex-shrink: 0;
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
 .cursor-label.is-hot {
@@ -530,6 +595,7 @@ html.app--hero-scroll::-webkit-scrollbar {
 
 .cursor-label.is-hot b {
   background: var(--ember);
+  transform: scale(1.25);
 }
 
 /* ——— Shared section bits ——— */

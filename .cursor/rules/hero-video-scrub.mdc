@@ -1,0 +1,59 @@
+---
+description: Technique héros Terminal — scrub vidéo scroll-driven (Maison Bastide + signature freelance)
+alwaysApply: true
+---
+
+# Hero = scrub vidéo (pas frames, pas segments play/pause)
+
+Référence UX : https://terminal-industries.com/
+
+## Principe
+
+Le scroll mappe une timeline vidéo continue. La vidéo reste **en pause** ;
+on ne fait que seeker :
+
+```
+scroll progress 0→1  →  video.currentTime = progress × duration
+```
+
+- Piste de scroll : section `.hero` haute (ex. ~320–380 vh)
+- Viewport : `.hero__sticky` 100 vh + `<video>` full-bleed (`object-fit: cover`)
+- ScrollTrigger `scrub` sur la section ; Lenis pour le smooth wheel
+- Seek via rAF (éviter de spam `currentTime` plus fort que ~1 frame)
+- Titres / rail / SFX = overlays calés sur des **seuils de progress**, pas sur `play()`
+
+## Encodage scrub (critique)
+
+Un MP4 “normal” (GOP long, P/B-frames) **saccade** au seek.
+Encoder **all-intra** (1 keyframe = 1 image) :
+
+```bash
+# Desktop — piqué
+ffmpeg -i hero.mp4 -an -c:v libx264 -pix_fmt yuv420p -profile:v high \
+  -preset medium -crf 17 -g 1 -keyint_min 1 -sc_threshold 0 -bf 0 \
+  -movflags +faststart public/video/hero-scrub.mp4
+
+# Mobile — plus léger (résolution ↓, CRF un peu plus haut)
+ffmpeg -i hero.mp4 -an -vf scale=960:-2 -c:v libx264 -pix_fmt yuv420p \
+  -profile:v main -preset medium -crf 20 -g 1 -keyint_min 1 \
+  -sc_threshold 0 -bf 0 -movflags +faststart public/video/hero-mobile-scrub.mp4
+```
+
+Servir desktop vs mobile via `matchMedia` (pas le même fichier 1080 all-intra sur téléphone).
+
+## Architecture code (ce projet)
+
+- `src/hero-engine.js` : `createHeroEngine(root)` / `destroy()` — **aucun useState**
+- `src/Hero.jsx` : mount engine, markup video + overlays
+- `App.jsx` : Lenis global + reste de la page
+
+## Interdits (héros)
+
+- Pas d’extraction de frames / canvas / `ImageBitmap` / loader de préchargement frames
+- Pas de scrub “segment play→pause verrouillé” (ce n’est pas Terminal)
+- Pas de piste audio vidéo pendant le scrub (muted) ; SFX overlay optionnel, désactivé tant que non redemandé
+
+## Mobile
+
+- Fichier dédié plus petit ; drift caméra / effets lourds réduits ou off
+- `playsinline` + `muted` ; respecter `prefers-reduced-motion` (pas de scrub)
