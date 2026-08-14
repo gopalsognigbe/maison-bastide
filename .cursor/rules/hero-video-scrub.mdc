@@ -33,13 +33,15 @@ ffmpeg -i hero.mp4 -an -c:v libx264 -pix_fmt yuv420p -profile:v high \
   -preset medium -crf 17 -g 1 -keyint_min 1 -sc_threshold 0 -bf 0 \
   -movflags +faststart public/video/hero-scrub.mp4
 
-# Mobile — plus léger (résolution ↓, CRF un peu plus haut)
-ffmpeg -i hero.mp4 -an -vf scale=960:-2 -c:v libx264 -pix_fmt yuv420p \
-  -profile:v main -preset medium -crf 20 -g 1 -keyint_min 1 \
-  -sc_threshold 0 -bf 0 -movflags +faststart public/video/hero-mobile-scrub.mp4
+# Mobile — 720p (assez net en retina), CRF 18 ; pas 960 (trop soft)
+ffmpeg -i public/video/hero-scrub.mp4 -an -vf "scale=1280:-2:flags=lanczos" \
+  -c:v libx264 -pix_fmt yuv420p -profile:v high -preset medium -crf 18 \
+  -g 1 -keyint_min 1 -sc_threshold 0 -bf 0 -movflags +faststart \
+  public/video/hero-mobile-scrub.mp4
 ```
 
 Servir desktop vs mobile via `matchMedia` (pas le même fichier 1080 all-intra sur téléphone).
+Sur mobile : stage à 100% (pas d’overscan 108% — ça floute).
 
 ## Architecture code (ce projet)
 

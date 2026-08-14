@@ -243,6 +243,13 @@ html.app--loading body {
   .hero {
     height: 180vh;
   }
+
+  /* No overscan scale on mobile — inset -4%/108% softens the scrub plate */
+  .hero__stage {
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 }
 
 .app--reduced-motion .hero,
