@@ -234,14 +234,14 @@ html.app--loading body {
 /* ——— Hero (scroll runway → video scrub) ——— */
 .hero {
   position: relative;
-  /* ~2 viewport-scrolls after T4/T5 (was 380vh ≈ 4+) */
-  height: 250vh;
+  /* Story→T5 uses ~90% of runway (see mapScrollToVideo); short tail after T5 */
+  height: 220vh;
   background: var(--roast);
 }
 
 @media (max-width: 767px) {
   .hero {
-    height: 210vh;
+    height: 180vh;
   }
 }
 

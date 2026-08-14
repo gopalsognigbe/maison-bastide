@@ -45,6 +45,23 @@ export const HERO_BEAT_TIMING = [
 /** @deprecated use HERO_BEAT_TIMING + i18n beats */
 export const HERO_BEATS = HERO_BEAT_TIMING
 
+/**
+ * T5 enters at video ~52%. Without remapping, ~half the runway remains after
+ * it — several wheel flicks before #metier. Map story→T5 onto most of the
+ * scroll; leave a short tail for the rest of the clip + section handoff.
+ */
+const STORY_END_VIDEO = 84 / FRAME_SPAN
+const STORY_END_SCROLL = 0.9
+
+function mapScrollToVideo(scrollProgress) {
+  const p = clamp01(scrollProgress)
+  if (p <= STORY_END_SCROLL) {
+    return (p / STORY_END_SCROLL) * STORY_END_VIDEO
+  }
+  const t = (p - STORY_END_SCROLL) / (1 - STORY_END_SCROLL)
+  return STORY_END_VIDEO + t * (1 - STORY_END_VIDEO)
+}
+
 const SEEK_EPS = 1 / 30
 
 function clamp01(value) {
@@ -309,15 +326,16 @@ export function createHeroEngine(root, options = {}) {
 
   const scrubTo = (progress) => {
     lastProgress = progress
-    updateRail(progress)
-    syncBeats(progress)
+    const videoProgress = mapScrollToVideo(progress)
+    updateRail(videoProgress)
+    syncBeats(videoProgress)
 
     if (scrollHint) {
       scrollHint.style.opacity = progress > 0.04 ? '0' : ''
     }
 
     if (!duration || motionReduced) return
-    targetTime = progress * duration
+    targetTime = videoProgress * duration
     if (!seekRaf) seekRaf = requestAnimationFrame(flushSeek)
   }
 
