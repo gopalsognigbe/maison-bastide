@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loader previews — Maison Bastide</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --roast: #141110;
+        --bean: #a8b98a;
+        --paper: #ede9e3;
+        --ash: #6b6560;
+        --mist: #a39e98;
+        --ember: #8a4b2a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Outfit, sans-serif;
+        background: #0a0908;
+        color: var(--paper);
+        min-height: 100vh;
+        padding: 2rem 1.25rem 4rem;
+      }
+
+      h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 500;
+        font-size: clamp(1.75rem, 4vw, 2.5rem);
+        letter-spacing: -0.02em;
+        margin-bottom: 0.35rem;
+      }
+
+      .intro {
+        color: var(--mist);
+        font-size: 0.9rem;
+        max-width: 36rem;
+        margin-bottom: 2rem;
+        line-height: 1.5;
+      }
+
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        align-items: center;
+        margin-bottom: 2rem;
+      }
+
+      .controls label {
+        font-size: 0.7rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--mist);
+      }
+
+      .controls input[type='range'] {
+        width: min(16rem, 60vw);
+        accent-color: var(--bean);
+      }
+
+      .pct-live {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.75rem;
+        color: var(--bean);
+        min-width: 3ch;
+      }
+
+      .btn {
+        font: inherit;
+        font-size: 0.7rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--roast);
+        background: var(--bean);
+        border: none;
+        border-radius: 999px;
+        padding: 0.55rem 1rem;
+        cursor: pointer;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.25rem;
+      }
+
+      .card {
+        border: 1px solid rgba(237, 233, 227, 0.1);
+        border-radius: 12px;
+        overflow: hidden;
+        background: #0f0d0c;
+      }
+
+      .card__meta {
+        padding: 1rem 1.1rem 0.85rem;
+        border-bottom: 1px solid rgba(237, 233, 227, 0.08);
+      }
+
+      .card__tag {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--bean);
+        margin-bottom: 0.35rem;
+      }
+
+      .card__title {
+        font-size: 0.95rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+      }
+
+      .card__desc {
+        font-size: 0.8rem;
+        color: var(--mist);
+        line-height: 1.45;
+      }
+
+      .stage {
+        position: relative;
+        height: 340px;
+        background: var(--roast);
+        display: grid;
+        place-items: center;
+        overflow: hidden;
+      }
+
+      .stage--mobile {
+        width: min(100%, 220px);
+        height: 400px;
+        margin: 1.25rem auto;
+        border-radius: 28px;
+        border: 1px solid rgba(237, 233, 227, 0.12);
+        box-shadow: 0 0 0 8px #1a1715;
+      }
+
+      /* ——— Shared loader pieces ——— */
+      .brand {
+        font-family: Outfit, sans-serif;
+        font-size: 0.68rem;
+        font-weight: 500;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--paper);
+      }
+
+      .brand--sm {
+        font-size: 0.58rem;
+        letter-spacing: 0.22em;
+      }
+
+      .mono {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.12em;
+        color: var(--bean);
+      }
+
+      .fade-layer {
+        position: absolute;
+        inset: 0;
+        background: var(--roast);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.45s ease;
+      }
+
+      .stage.is-exiting .fade-layer {
+        opacity: 1;
+      }
+
+      /* Bean SVG */
+      .bean {
+        width: 56px;
+        height: 78px;
+        display: block;
+      }
+
+      .bean--lg {
+        width: 72px;
+        height: 100px;
+      }
+
+      .bean--sm {
+        width: 40px;
+        height: 56px;
+      }
+
+      .loader-stack {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1.35rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .loader-stack--tight {
+        gap: 0.9rem;
+      }
+
+      /* A1 Classic brand + filling bean */
+      .a1 .track {
+        width: 7rem;
+        height: 1px;
+        background: rgba(237, 233, 227, 0.15);
+        overflow: hidden;
+      }
+
+      .a1 .bar {
+        height: 100%;
+        width: 0%;
+        background: var(--bean);
+      }
+
+      /* A2 Surprise — bean as liquid roast fill + brand reveal */
+      .a2 .brand {
+        clip-path: inset(0 100% 0 0);
+        transition: none;
+      }
+
+      .a2 .brand.is-on {
+        animation: brandReveal 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+      }
+
+      @keyframes brandReveal {
+        to {
+          clip-path: inset(0 0 0 0);
+        }
+      }
+
+      .a2 .ember-glow {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(138, 75, 42, 0.35),
+          transparent 70%
+        );
+        filter: blur(8px);
+        z-index: 0;
+        opacity: 0.55;
+      }
+
+      /* A3 Surprise — vertical split monogram with bean between */
+      .a3 .mono-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+
+      .a3 .letter {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 3.5rem;
+        line-height: 1;
+        color: var(--paper);
+        font-weight: 500;
+      }
+
+      .a3 .sub {
+        margin-top: 0.25rem;
+        opacity: 0.7;
+      }
+
+      /* A4 Mobile light */
+      .a4 .loader-stack {
+        gap: 1rem;
+      }
+
+      .hint {
+        margin-top: 2.5rem;
+        font-size: 0.8rem;
+        color: var(--mist);
+        max-width: 40rem;
+        line-height: 1.5;
+      }
+
+      .hint strong {
+        color: var(--paper);
+        font-weight: 500;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Aperçus loader — direction A</h1>
+    <p class="intro">
+      Grain de café qui se remplit + marque. Fais bouger le curseur ou lance une
+      simulation. Compare les 4 propositions (dont 2 surprises + mobile allégé).
+    </p>
+
+    <div class="controls">
+      <label for="progress">Progression</label>
+      <input id="progress" type="range" min="0" max="100" value="37" />
+      <span class="pct-live" id="pctLabel">37%</span>
+      <button class="btn" id="simulate" type="button">Simuler 0 → 100</button>
+      <button class="btn" id="exit" type="button" style="background: var(--paper)">
+        Tester le fondu de sortie
+      </button>
+    </div>
+
+    <div class="grid">
+      <!-- A1 -->
+      <article class="card">
+        <div class="card__meta">
+          <p class="card__tag">A1 — Classique</p>
+          <h2 className="card__title" class="card__title">Grain + marque + trait</h2>
+          <p class="card__desc">
+            Ton idée : bean qui se remplit, MAISON BASTIDE en dessous, barre fine
+            + %. Sortie en fondu.
+          </p>
+        </div>
+        <div class="stage a1" data-preview="a1">
+          <div class="loader-stack">
+            <svg class="bean bean--lg" viewBox="0 0 80 110" aria-hidden="true">
+              <defs>
+                <clipPath id="beanClip1">
+                  <path
+                    d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                  />
+                </clipPath>
+              </defs>
+              <path
+                d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                fill="none"
+                stroke="rgba(237,233,227,0.28)"
+                stroke-width="2"
+              />
+              <g clip-path="url(#beanClip1)">
+                <rect
+                  class="fill-rect"
+                  x="0"
+                  y="110"
+                  width="80"
+                  height="110"
+                  fill="var(--bean)"
+                />
+              </g>
+              <path
+                d="M40 18C36 38 36 72 40 92"
+                fill="none"
+                stroke="rgba(20,17,16,0.35)"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <p class="brand">Maison Bastide</p>
+            <div class="track"><div class="bar"></div></div>
+            <p class="mono pct">37%</p>
+          </div>
+          <div class="fade-layer"></div>
+        </div>
+      </article>
+
+      <!-- A2 surprise -->
+      <article class="card">
+        <div class="card__meta">
+          <p class="card__tag">A2 — Surprise ember</p>
+          <h2 class="card__title">Remplissage “braise” + marque qui se dévoile</h2>
+          <p class="card__desc">
+            Fill en dégradé ember→bean, halo chaud, marque révélée en clip (pas
+            de barre). Plus sensoriel.
+          </p>
+        </div>
+        <div class="stage a2" data-preview="a2">
+          <div class="ember-glow"></div>
+          <div class="loader-stack">
+            <svg class="bean bean--lg" viewBox="0 0 80 110" aria-hidden="true">
+              <defs>
+                <clipPath id="beanClip2">
+                  <path
+                    d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                  />
+                </clipPath>
+                <linearGradient id="roastFill" x1="0" y1="1" x2="0" y2="0">
+                  <stop offset="0%" stop-color="#8A4B2A" />
+                  <stop offset="55%" stop-color="#A8B98A" />
+                  <stop offset="100%" stop-color="#C5D4A8" />
+                </linearGradient>
+              </defs>
+              <path
+                d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                fill="rgba(237,233,227,0.06)"
+                stroke="rgba(237,233,227,0.22)"
+                stroke-width="2"
+              />
+              <g clip-path="url(#beanClip2)">
+                <rect
+                  class="fill-rect"
+                  x="0"
+                  y="110"
+                  width="80"
+                  height="110"
+                  fill="url(#roastFill)"
+                />
+              </g>
+              <path
+                d="M40 18C36 38 36 72 40 92"
+                fill="none"
+                stroke="rgba(20,17,16,0.4)"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <p class="brand brand-reveal">Maison Bastide</p>
+            <p class="mono pct">37%</p>
+          </div>
+          <div class="fade-layer"></div>
+        </div>
+      </article>
+
+      <!-- A3 surprise -->
+      <article class="card">
+        <div class="card__meta">
+          <p class="card__tag">A3 — Surprise monogramme</p>
+          <h2 class="card__title">M · grain · B</h2>
+          <p class="card__desc">
+            Lettres éditoriales Cormorant, grain au centre qui monte. Très
+            “maison / atelier”.
+          </p>
+        </div>
+        <div class="stage a3" data-preview="a3">
+          <div class="loader-stack loader-stack--tight">
+            <div class="mono-row">
+              <span class="letter">M</span>
+              <svg class="bean" viewBox="0 0 80 110" aria-hidden="true">
+                <defs>
+                  <clipPath id="beanClip3">
+                    <path
+                      d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                    />
+                  </clipPath>
+                </defs>
+                <path
+                  d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                  fill="none"
+                  stroke="rgba(237,233,227,0.28)"
+                  stroke-width="2"
+                />
+                <g clip-path="url(#beanClip3)">
+                  <rect
+                    class="fill-rect"
+                    x="0"
+                    y="110"
+                    width="80"
+                    height="110"
+                    fill="var(--bean)"
+                  />
+                </g>
+                <path
+                  d="M40 18C36 38 36 72 40 92"
+                  fill="none"
+                  stroke="rgba(20,17,16,0.35)"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                />
+              </svg>
+              <span class="letter">B</span>
+            </div>
+            <p class="brand brand--sm sub">Maison Bastide</p>
+            <p class="mono pct">37%</p>
+          </div>
+          <div class="fade-layer"></div>
+        </div>
+      </article>
+
+      <!-- A4 mobile -->
+      <article class="card">
+        <div class="card__meta">
+          <p class="card__tag">A4 — Mobile allégé</p>
+          <h2 class="card__title">Grain + marque seulement</h2>
+          <p class="card__desc">
+            Pas de barre. Petit bean, marque courte, % mono. Idéal &lt;768px /
+            loads courts.
+          </p>
+        </div>
+        <div class="stage stage--mobile a4" data-preview="a4">
+          <div class="loader-stack">
+            <svg class="bean bean--sm" viewBox="0 0 80 110" aria-hidden="true">
+              <defs>
+                <clipPath id="beanClip4">
+                  <path
+                    d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                  />
+                </clipPath>
+              </defs>
+              <path
+                d="M40 6C22 6 10 28 10 55s12 49 30 49 30-22 30-49S58 6 40 6Z"
+                fill="none"
+                stroke="rgba(237,233,227,0.28)"
+                stroke-width="2.5"
+              />
+              <g clip-path="url(#beanClip4)">
+                <rect
+                  class="fill-rect"
+                  x="0"
+                  y="110"
+                  width="80"
+                  height="110"
+                  fill="var(--bean)"
+                />
+              </g>
+              <path
+                d="M40 18C36 38 36 72 40 92"
+                fill="none"
+                stroke="rgba(20,17,16,0.35)"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+            <p class="brand brand--sm">Maison Bastide</p>
+            <p class="mono pct">37%</p>
+          </div>
+          <div class="fade-layer"></div>
+        </div>
+      </article>
+    </div>
+
+    <p class="hint">
+      <strong>Reco perso :</strong> A1 pour la clarté portfolio, A2 si tu veux
+      marquer le craft sensoriel, A3 si tu pousses l’identité “maison”. Mobile =
+      toujours A4. Dis-moi le combo (ex. <em>A2 desktop + A4 mobile + fondu</em>).
+    </p>
+
+    <script>
+      const range = document.getElementById('progress')
+      const pctLabel = document.getElementById('pctLabel')
+      const stages = [...document.querySelectorAll('.stage')]
+
+      function applyProgress(value) {
+        const v = Number(value)
+        pctLabel.textContent = `${v}%`
+        stages.forEach((stage) => {
+          const fill = stage.querySelector('.fill-rect')
+          const pct = stage.querySelector('.pct')
+          const bar = stage.querySelector('.bar')
+          const brandReveal = stage.querySelector('.brand-reveal')
+          if (fill) {
+            const y = 110 - (110 * v) / 100
+            fill.setAttribute('y', String(y))
+          }
+          if (pct) pct.textContent = `${v}%`
+          if (bar) bar.style.width = `${v}%`
+          if (brandReveal) {
+            brandReveal.classList.toggle('is-on', v >= 12)
+            if (v < 12) brandReveal.classList.remove('is-on')
+          }
+        })
+      }
+
+      range.addEventListener('input', (e) => applyProgress(e.target.value))
+      applyProgress(range.value)
+
+      let simTimer
+      document.getElementById('simulate').addEventListener('click', () => {
+        clearInterval(simTimer)
+        let v = 0
+        range.value = 0
+        applyProgress(0)
+        simTimer = setInterval(() => {
+          v += 1
+          range.value = v
+          applyProgress(v)
+          if (v >= 100) clearInterval(simTimer)
+        }, 28)
+      })
+
+      document.getElementById('exit').addEventListener('click', () => {
+        stages.forEach((s) => s.classList.add('is-exiting'))
+        setTimeout(() => {
+          stages.forEach((s) => s.classList.remove('is-exiting'))
+        }, 900)
+      })
+    </script>
+  </body>
+</html>

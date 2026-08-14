@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maison Bastide — Barre de scroll héros</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --roast: #141110;
+        --bean: #a8b98a;
+        --paper: #ede9e3;
+        --ash: #6b6560;
+        --ember: #8a4b2a;
+        --mist: #a39e98;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Outfit, sans-serif;
+        background: var(--roast);
+        color: var(--paper);
+      }
+
+      .page {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 4rem;
+      }
+
+      .intro {
+        max-width: 40rem;
+        margin-bottom: 2rem;
+      }
+
+      .intro__eyebrow {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--bean);
+        margin-bottom: 0.75rem;
+      }
+
+      .intro h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 500;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.05;
+        margin-bottom: 0.7rem;
+      }
+
+      .intro p {
+        color: var(--mist);
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      .note {
+        margin: 1.25rem 0 2rem;
+        padding: 0.9rem 1rem;
+        border: 1px solid rgba(237, 233, 227, 0.14);
+        color: var(--mist);
+        font-size: 0.86rem;
+        line-height: 1.55;
+      }
+
+      .note strong {
+        color: var(--paper);
+        font-weight: 500;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1.15rem;
+      }
+
+      @media (min-width: 880px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .card {
+        border: 1px solid rgba(237, 233, 227, 0.12);
+        background: rgba(237, 233, 227, 0.03);
+        overflow: hidden;
+      }
+
+      .card__meta {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.95rem 1.05rem 0.55rem;
+        align-items: baseline;
+      }
+
+      .card__id {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.62rem;
+        letter-spacing: 0.18em;
+        color: var(--bean);
+      }
+
+      .card__name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+
+      .card__why {
+        padding: 0 1.05rem 0.95rem;
+        color: var(--mist);
+        font-size: 0.84rem;
+        line-height: 1.5;
+      }
+
+      .demo {
+        position: relative;
+        height: 220px;
+        margin: 0 1.05rem 1.05rem;
+        overflow: hidden;
+        background:
+          linear-gradient(
+            180deg,
+            rgba(20, 17, 16, 0.25),
+            rgba(20, 17, 16, 0.5)
+          ),
+          url('/frames/frame-0042.jpg') center / cover no-repeat;
+        border: 1px solid rgba(237, 233, 227, 0.08);
+      }
+
+      .demo__label {
+        position: absolute;
+        left: 1rem;
+        bottom: 1rem;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: rgba(237, 233, 227, 0.65);
+        z-index: 2;
+      }
+
+      .demo__scrub {
+        position: absolute;
+        inset: 0;
+        z-index: 3;
+        cursor: ew-resize;
+        opacity: 0;
+      }
+
+      /* ——— A Thin ember rail ——— */
+      .sb-a {
+        position: absolute;
+        right: 14px;
+        top: 18px;
+        bottom: 18px;
+        width: 2px;
+        background: rgba(237, 233, 227, 0.16);
+        z-index: 4;
+      }
+
+      .sb-a__fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 28%;
+        background: var(--ember);
+        transform-origin: top;
+      }
+
+      /* ——— B Mono ticks + % ——— */
+      .sb-b {
+        position: absolute;
+        right: 12px;
+        top: 16px;
+        bottom: 16px;
+        width: 28px;
+        z-index: 4;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0;
+      }
+
+      .sb-b__pct {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.08em;
+        color: var(--bean);
+        margin-bottom: 0.45rem;
+      }
+
+      .sb-b__track {
+        flex: 1;
+        width: 1px;
+        background: rgba(237, 233, 227, 0.18);
+        position: relative;
+      }
+
+      .sb-b__track::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: repeating-linear-gradient(
+          to bottom,
+          rgba(237, 233, 227, 0.35) 0 1px,
+          transparent 1px 10px
+        );
+        opacity: 0.5;
+      }
+
+      .sb-b__thumb {
+        position: absolute;
+        left: -3px;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--paper);
+        top: 28%;
+        transform: translateY(-50%);
+      }
+
+      /* ——— C Bean capsule ——— */
+      .sb-c {
+        position: absolute;
+        right: 12px;
+        top: 20px;
+        bottom: 20px;
+        width: 8px;
+        border-radius: 999px;
+        background: rgba(237, 233, 227, 0.12);
+        overflow: hidden;
+        z-index: 4;
+      }
+
+      .sb-c__fill {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 28%;
+        background: linear-gradient(180deg, var(--bean), var(--ember));
+      }
+
+      /* ——— D Paper thumb ——— */
+      .sb-d {
+        position: absolute;
+        right: 10px;
+        top: 16px;
+        bottom: 16px;
+        width: 3px;
+        background: rgba(20, 17, 16, 0.45);
+        z-index: 4;
+      }
+
+      .sb-d__thumb {
+        position: absolute;
+        left: -2px;
+        width: 7px;
+        height: 42px;
+        background: var(--paper);
+        top: 18%;
+        opacity: 0.92;
+      }
+
+      /* ——— E Top progress line ——— */
+      .sb-e {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 2px;
+        background: rgba(237, 233, 227, 0.12);
+        z-index: 4;
+      }
+
+      .sb-e__fill {
+        height: 100%;
+        width: 28%;
+        background: var(--bean);
+      }
+
+      .sb-e__mark {
+        position: absolute;
+        top: 8px;
+        left: 28%;
+        transform: translateX(-50%);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.55rem;
+        letter-spacing: 0.14em;
+        color: var(--bean);
+      }
+
+      .footer {
+        margin-top: 2rem;
+        color: var(--mist);
+        font-size: 0.86rem;
+        line-height: 1.6;
+      }
+
+      .footer code {
+        font-family: 'IBM Plex Mono', monospace;
+        color: var(--bean);
+        font-size: 0.78rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="intro">
+        <p class="intro__eyebrow">Scroll UI · héros only</p>
+        <h1>Propositions barre de scroll</h1>
+        <p>
+          Visible uniquement pendant le héros (scrub frames). Dès la section
+          suivante, la scrollbar native reprend. Survole / glisse dans chaque
+          aperçu pour simuler la progression.
+        </p>
+      </header>
+
+      <p class="note">
+        <strong>Comportement prévu :</strong> scrollbar native masquée tant que
+        le héros est sticky ; indicateur custom piloté par le progress
+        ScrollTrigger ; au-delà du héros → scrollbar OS normale.
+      </p>
+
+      <div class="grid">
+        <article class="card">
+          <div class="card__meta">
+            <span class="card__id">S1</span>
+            <h2 class="card__name">Rail ember</h2>
+          </div>
+          <p class="card__why">
+            Filet vertical 2px à droite, fill ember du haut vers le bas. Minimal,
+            luxe atelier, ne concurrence pas le titre C.
+          </p>
+          <div class="demo" data-demo="a">
+            <div class="sb-a"><div class="sb-a__fill" data-fill></div></div>
+            <p class="demo__label">Glisser →</p>
+            <div class="demo__scrub" data-scrub></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="card__id">S2</span>
+            <h2 class="card__name">Ticks + %</h2>
+          </div>
+          <p class="card__why">
+            Graduation mono + pourcentage bean. Très “lab / Terminal”, utile
+            pour le portfolio (montre le craft technique).
+          </p>
+          <div class="demo" data-demo="b">
+            <div class="sb-b">
+              <span class="sb-b__pct" data-pct>28%</span>
+              <div class="sb-b__track">
+                <div class="sb-b__thumb" data-fill></div>
+              </div>
+            </div>
+            <p class="demo__label">Glisser →</p>
+            <div class="demo__scrub" data-scrub></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="card__id">S3</span>
+            <h2 class="card__name">Capsule grain</h2>
+          </div>
+          <p class="card__why">
+            Capsule fine, fill bean→ember depuis le bas (comme un niveau de
+            torréfaction). Plus expressif, un peu plus “produit”.
+          </p>
+          <div class="demo" data-demo="c">
+            <div class="sb-c"><div class="sb-c__fill" data-fill></div></div>
+            <p class="demo__label">Glisser →</p>
+            <div class="demo__scrub" data-scrub></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="card__id">S4</span>
+            <h2 class="card__name">Pouce paper</h2>
+          </div>
+          <p class="card__why">
+            Track sombre + thumb paper court. Proche d’une vraie scrollbar
+            custom, discret, premium sans gadget.
+          </p>
+          <div class="demo" data-demo="d">
+            <div class="sb-d"><div class="sb-d__thumb" data-fill></div></div>
+            <p class="demo__label">Glisser →</p>
+            <div class="demo__scrub" data-scrub></div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="card__meta">
+            <span class="card__id">S5</span>
+            <h2 class="card__name">Ligne haute</h2>
+          </div>
+          <p class="card__why">
+            Progress bar en haut du viewport (style lecture). Libère le bord
+            droit pour le curseur label. Très clair sur mobile aussi.
+          </p>
+          <div class="demo" data-demo="e">
+            <div class="sb-e">
+              <div class="sb-e__fill" data-fill></div>
+              <span class="sb-e__mark" data-pct>28%</span>
+            </div>
+            <p class="demo__label">Glisser →</p>
+            <div class="demo__scrub" data-scrub></div>
+          </div>
+        </article>
+      </div>
+
+      <p class="footer">
+        Réponds avec le code — ex. <code>S1</code> ou <code>S5</code> — et on
+        l’implémente (masque native pendant le héros uniquement).
+      </p>
+    </div>
+
+    <script>
+      document.querySelectorAll('.demo').forEach((demo) => {
+        const scrub = demo.querySelector('[data-scrub]')
+        const fill = demo.querySelector('[data-fill]')
+        const pct = demo.querySelector('[data-pct]')
+        const type = demo.dataset.demo
+
+        const apply = (p) => {
+          const v = Math.max(0, Math.min(1, p))
+          if (type === 'a') fill.style.height = `${v * 100}%`
+          if (type === 'b') {
+            fill.style.top = `${v * 100}%`
+            if (pct) pct.textContent = `${Math.round(v * 100)}%`
+          }
+          if (type === 'c') fill.style.height = `${v * 100}%`
+          if (type === 'd') fill.style.top = `${v * (100 - 22)}%`
+          if (type === 'e') {
+            fill.style.width = `${v * 100}%`
+            if (pct) {
+              pct.style.left = `${v * 100}%`
+              pct.textContent = `${Math.round(v * 100)}%`
+            }
+          }
+        }
+
+        const fromEvent = (e) => {
+          const rect = demo.getBoundingClientRect()
+          const x = ('touches' in e ? e.touches[0].clientX : e.clientX) - rect.left
+          apply(x / rect.width)
+        }
+
+        let dragging = false
+        scrub.addEventListener('pointerdown', (e) => {
+          dragging = true
+          scrub.setPointerCapture(e.pointerId)
+          fromEvent(e)
+        })
+        scrub.addEventListener('pointermove', (e) => {
+          if (!dragging) fromEvent(e)
+          else fromEvent(e)
+        })
+        scrub.addEventListener('pointerup', () => {
+          dragging = false
+        })
+        scrub.addEventListener('pointerleave', () => {
+          if (!dragging) return
+          dragging = false
+        })
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+---
+description: Règles du projet Maison Bastide (React)
+alwaysApply: true
+---
+
+# Stack
+- Vite + React 18, JavaScript (pas de TypeScript pour ce projet)
+- GSAP 3.12 + ScrollTrigger (npm, pas de CDN)
+- Lenis (npm : @studio-freight/lenis ou lenis selon version)
+- Un seul composant principal : App.jsx. Pas de découpage en sous-
+  composants pour l'instant — le but est de voir tout le mécanisme
+  dans un seul fichier.
+
+# Règles React strictes pour ce projet
+- Les frames extraites (ImageBitmap[]) vivent dans un useRef, JAMAIS
+  dans un useState. Elles ne doivent déclencher aucun re-render.
+- Le canvas est référencé via useRef.
+- Toute la logique GSAP/ScrollTrigger/Lenis est initialisée dans UN SEUL
+  useEffect avec un tableau de dépendances vide [].
+- Ce useEffect doit retourner une fonction de nettoyage qui détruit le
+  ScrollTrigger (scrollTrigger.kill()) et le Lenis (lenis.destroy()).
+- Ne jamais recréer le ScrollTrigger à chaque re-render.
+- Le pourcentage de chargement peut être en useState (léger, ok pour
+  re-render), mais pas le tableau de frames lui-même.
+
+# Design tokens
+--roast: #141110
+--bean:  #A8B98A
+--paper: #EDE9E3
+--ash:   #6B6560
+--ember: #8A4B2A
+--mist:  #A39E98  /* texte atténué sur fond sombre, AA ≥ 4.5:1 */
+
+# Interdits
+- Pas de Next.js pour ce projet (garde Vite, plus simple)
+- Pas de librairie de composants (shadcn, etc.)
+- Pas de state management externe (Redux, Zustand) — inutile ici

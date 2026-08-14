@@ -1,0 +1,857 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Maison Bastide — Propositions titres & curseur</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Outfit:wght@300;400;500;600&family=Syne:wght@500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --roast: #141110;
+        --bean: #a8b98a;
+        --paper: #ede9e3;
+        --ash: #6b6560;
+        --ember: #8a4b2a;
+        --mist: #a39e98;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Outfit, sans-serif;
+        background: var(--roast);
+        color: var(--paper);
+        min-height: 100vh;
+      }
+
+      .page {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 2.5rem 1.25rem 5rem;
+      }
+
+      .intro {
+        margin-bottom: 2.5rem;
+        max-width: 42rem;
+      }
+
+      .intro__eyebrow {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--bean);
+        margin-bottom: 0.85rem;
+      }
+
+      .intro h1 {
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 500;
+        font-size: clamp(2.2rem, 5vw, 3.4rem);
+        line-height: 1.05;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.75rem;
+      }
+
+      .intro p {
+        color: var(--mist);
+        font-size: 0.98rem;
+        line-height: 1.65;
+      }
+
+      .tabs {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 1.75rem;
+        border-bottom: 1px solid rgba(237, 233, 227, 0.12);
+        padding-bottom: 0.75rem;
+      }
+
+      .tabs button {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mist);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 999px;
+        padding: 0.55rem 0.9rem;
+        cursor: pointer;
+      }
+
+      .tabs button.is-on {
+        color: var(--roast);
+        background: var(--paper);
+        border-color: var(--paper);
+      }
+
+      .panel {
+        display: none;
+      }
+
+      .panel.is-on {
+        display: block;
+      }
+
+      .grid {
+        display: grid;
+        gap: 1.25rem;
+      }
+
+      @media (min-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .card {
+        border: 1px solid rgba(237, 233, 227, 0.12);
+        background: rgba(237, 233, 227, 0.03);
+        overflow: hidden;
+      }
+
+      .card__meta {
+        padding: 1rem 1.1rem 0.85rem;
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: baseline;
+      }
+
+      .card__id {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.65rem;
+        letter-spacing: 0.18em;
+        color: var(--bean);
+      }
+
+      .card__name {
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.35rem;
+        font-weight: 500;
+      }
+
+      .card__why {
+        padding: 0 1.1rem 1rem;
+        color: var(--mist);
+        font-size: 0.86rem;
+        line-height: 1.55;
+      }
+
+      .card__tokens {
+        padding: 0 1.1rem 1.1rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+
+      .chip {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.6rem;
+        letter-spacing: 0.08em;
+        color: var(--paper);
+        border: 1px solid rgba(237, 233, 227, 0.18);
+        padding: 0.28rem 0.45rem;
+      }
+
+      .stage {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        background: #1a1513
+          url('/frames/frame-0042.jpg') center / cover no-repeat;
+      }
+
+      .stage::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: linear-gradient(
+          180deg,
+          rgba(20, 17, 16, 0.25) 0%,
+          rgba(20, 17, 16, 0.1) 45%,
+          rgba(20, 17, 16, 0.45) 100%
+        );
+      }
+
+      .stage--pick {
+        cursor: none;
+      }
+
+      /* ——— Title proposals ——— */
+      .t {
+        position: absolute;
+        z-index: 2;
+        margin: 0;
+        pointer-events: none;
+      }
+
+      .t span {
+        display: block;
+      }
+
+      /* A — Atelier éditorial */
+      .t-a {
+        inset: 0;
+        display: grid;
+        place-items: center;
+        text-align: center;
+        font-family: Fraunces, 'Cormorant Garamond', serif;
+        font-weight: 500;
+        font-size: clamp(1.6rem, 3.4vw, 2.75rem);
+        line-height: 1.02;
+        letter-spacing: -0.03em;
+        color: var(--paper);
+        text-shadow: 0 1px 18px rgba(20, 17, 16, 0.55);
+      }
+
+      .t-a .eyebrow {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--bean);
+        margin-bottom: 0.85rem;
+        text-shadow: none;
+      }
+
+      /* B — Technique / Terminal */
+      .t-b {
+        left: 8%;
+        top: 50%;
+        transform: translateY(-50%);
+        max-width: 11ch;
+        text-align: left;
+        font-family: Syne, Outfit, sans-serif;
+        font-weight: 600;
+        font-size: clamp(1.55rem, 3.2vw, 2.55rem);
+        line-height: 0.98;
+        letter-spacing: -0.04em;
+        color: var(--paper);
+      }
+
+      .t-b .accent {
+        color: var(--bean);
+      }
+
+      .t-b .meta {
+        margin-top: 0.9rem;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.58rem;
+        font-weight: 400;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--mist);
+      }
+
+      /* C — Signature asymétrique */
+      .t-c {
+        left: 7%;
+        bottom: 14%;
+        max-width: 14ch;
+        text-align: left;
+        color: var(--paper);
+      }
+
+      .t-c .lead {
+        font-family: 'Instrument Serif', 'Cormorant Garamond', serif;
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        font-weight: 400;
+        line-height: 0.9;
+        letter-spacing: -0.03em;
+      }
+
+      .t-c .rest {
+        margin-top: 0.35rem;
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(1.15rem, 2.2vw, 1.7rem);
+        line-height: 1.15;
+        color: rgba(237, 233, 227, 0.88);
+      }
+
+      .t-c .rule {
+        width: 2.5rem;
+        height: 2px;
+        background: var(--ember);
+        margin: 0.85rem 0 0;
+      }
+
+      /* D — Voile de lisibilité */
+      .t-d-wrap {
+        position: absolute;
+        z-index: 2;
+        inset: 18% 12%;
+        display: grid;
+        place-items: center;
+      }
+
+      .t-d-veil {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(20, 17, 16, 0.62) 0%,
+          rgba(20, 17, 16, 0.28) 55%,
+          transparent 78%
+        );
+      }
+
+      .t-d {
+        position: relative;
+        text-align: center;
+        font-family: 'Cormorant Garamond', serif;
+        font-weight: 500;
+        font-size: clamp(1.7rem, 3.5vw, 2.9rem);
+        line-height: 1;
+        letter-spacing: -0.025em;
+        color: var(--paper);
+      }
+
+      .t-d em {
+        font-style: italic;
+        color: #f3efe8;
+      }
+
+      /* E — Mixte serif / sans */
+      .t-e {
+        right: 8%;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: right;
+        max-width: 12ch;
+      }
+
+      .t-e .big {
+        font-family: 'Cormorant Garamond', serif;
+        font-style: italic;
+        font-weight: 400;
+        font-size: clamp(2rem, 4.2vw, 3.3rem);
+        line-height: 0.92;
+        color: var(--paper);
+      }
+
+      .t-e .small {
+        margin-top: 0.55rem;
+        font-family: Outfit, sans-serif;
+        font-weight: 400;
+        font-size: clamp(0.72rem, 1.3vw, 0.95rem);
+        line-height: 1.35;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--mist);
+      }
+
+      .t-e .dot {
+        display: inline-block;
+        width: 0.45rem;
+        height: 0.45rem;
+        border-radius: 50%;
+        background: var(--bean);
+        margin-left: 0.45rem;
+        vertical-align: middle;
+      }
+
+      /* ——— Cursor demos ——— */
+      .cursor-lab {
+        position: relative;
+        min-height: 280px;
+        border: 1px solid rgba(237, 233, 227, 0.12);
+        background:
+          linear-gradient(180deg, rgba(20, 17, 16, 0.2), rgba(20, 17, 16, 0.55)),
+          url('/frames/frame-0080.jpg') center / cover no-repeat;
+        overflow: hidden;
+        margin-bottom: 1.25rem;
+        cursor: none;
+      }
+
+      .cursor-lab__hint {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        z-index: 1;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.6rem;
+        color: rgba(237, 233, 227, 0.55);
+        pointer-events: none;
+      }
+
+      .cursor-lab a {
+        position: absolute;
+        z-index: 2;
+        left: 10%;
+        bottom: 14%;
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--paper);
+        text-decoration: none;
+        border-bottom: 1px solid var(--bean);
+        padding-bottom: 0.2rem;
+        cursor: none;
+      }
+
+      .cx {
+        position: fixed;
+        top: 0;
+        left: 0;
+        pointer-events: none;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+        will-change: transform;
+      }
+
+      .cx.is-on {
+        opacity: 1;
+      }
+
+      .cx-grain {
+        width: 14px;
+        height: 14px;
+        margin: -7px 0 0 -7px;
+        border-radius: 50%;
+        background: var(--paper);
+        box-shadow: 0 0 0 1.5px var(--roast);
+        transition: transform 0.2s ease, background 0.2s ease;
+      }
+
+      .cx-grain.is-hot {
+        transform: scale(2.1);
+        background: var(--bean);
+      }
+
+      .cx-cross {
+        width: 28px;
+        height: 28px;
+        margin: -14px 0 0 -14px;
+      }
+
+      .cx-cross::before,
+      .cx-cross::after {
+        content: '';
+        position: absolute;
+        background: var(--paper);
+      }
+
+      .cx-cross::before {
+        left: 50%;
+        top: 0;
+        width: 1px;
+        height: 100%;
+        transform: translateX(-50%);
+      }
+
+      .cx-cross::after {
+        top: 50%;
+        left: 0;
+        height: 1px;
+        width: 100%;
+        transform: translateY(-50%);
+      }
+
+      .cx-cross i {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 5px;
+        height: 5px;
+        margin: -2.5px 0 0 -2.5px;
+        border-radius: 50%;
+        background: var(--bean);
+      }
+
+      .cx-ring {
+        width: 36px;
+        height: 36px;
+        margin: -18px 0 0 -18px;
+        border: 1.5px solid var(--paper);
+        border-radius: 50%;
+        mix-blend-mode: difference;
+        transition: transform 0.25s ease, border-color 0.2s ease;
+      }
+
+      .cx-ring.is-hot {
+        transform: scale(1.55);
+        border-color: var(--bean);
+      }
+
+      .cx-blade {
+        width: 22px;
+        height: 22px;
+        margin: -2px 0 0 -2px;
+        border-left: 1.5px solid var(--paper);
+        border-bottom: 1.5px solid var(--paper);
+        transition: transform 0.2s ease;
+      }
+
+      .cx-blade.is-hot {
+        transform: rotate(-18deg) scale(1.25);
+        border-color: var(--bean);
+      }
+
+      .cx-label {
+        display: flex;
+        align-items: center;
+        gap: 0.45rem;
+        margin: -0.7rem 0 0 0.6rem;
+        padding: 0.35rem 0.55rem;
+        background: rgba(20, 17, 16, 0.78);
+        border: 1px solid rgba(237, 233, 227, 0.2);
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.58rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--paper);
+        white-space: nowrap;
+      }
+
+      .cx-label b {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--bean);
+      }
+
+      .cx-label.is-hot span::after {
+        content: ' · LIRE';
+        color: var(--bean);
+      }
+
+      .pickers {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      @media (min-width: 700px) {
+        .pickers {
+          grid-template-columns: repeat(5, 1fr);
+        }
+      }
+
+      .pick {
+        text-align: left;
+        border: 1px solid rgba(237, 233, 227, 0.14);
+        background: rgba(237, 233, 227, 0.03);
+        color: var(--paper);
+        padding: 0.9rem;
+        cursor: pointer;
+        font: inherit;
+      }
+
+      .pick.is-on {
+        border-color: var(--bean);
+        background: rgba(168, 185, 138, 0.08);
+      }
+
+      .pick strong {
+        display: block;
+        font-family: 'Cormorant Garamond', serif;
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin-bottom: 0.35rem;
+      }
+
+      .pick span {
+        display: block;
+        color: var(--mist);
+        font-size: 0.78rem;
+        line-height: 1.45;
+      }
+
+      .footer-note {
+        margin-top: 2.5rem;
+        color: var(--mist);
+        font-size: 0.85rem;
+        line-height: 1.6;
+        max-width: 40rem;
+      }
+
+      .footer-note code {
+        font-family: 'IBM Plex Mono', monospace;
+        font-size: 0.78rem;
+        color: var(--bean);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="intro">
+        <p class="intro__eyebrow">Direction artistique · lab</p>
+        <h1>Propositions titres &amp; curseur</h1>
+        <p>
+          Cinq traitements pro pour les beats héros (lisibilité sur grains +
+          niveau case study 2–4k), puis cinq curseurs. Choisis une lettre titres
+          + un curseur — on implémente ensuite dans
+          <code>App.jsx</code>.
+        </p>
+      </header>
+
+      <div class="tabs" role="tablist">
+        <button type="button" class="is-on" data-tab="titles">Titres (5)</button>
+        <button type="button" data-tab="cursors">Curseurs (5)</button>
+      </div>
+
+      <section class="panel is-on" id="panel-titles">
+        <div class="grid">
+          <article class="card">
+            <div class="card__meta">
+              <span class="card__id">A</span>
+              <h2 class="card__name">Atelier éditorial</h2>
+            </div>
+            <div class="stage">
+              <p class="t t-a">
+                <span class="eyebrow">01 — Métier</span>
+                <span>Le café</span>
+                <span>comme un</span>
+                <span>métier d’art</span>
+              </p>
+            </div>
+            <p class="card__why">
+              Centré optique, Fraunces (didone contemporaine), ombre douce pour
+              AA sur texture. Eyebrow mono = rythme Terminal sans gadget.
+            </p>
+            <div class="card__tokens">
+              <span class="chip">Fraunces 500</span>
+              <span class="chip">paper + shadow</span>
+              <span class="chip">center</span>
+              <span class="chip">bean eyebrow</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__meta">
+              <span class="card__id">B</span>
+              <h2 class="card__name">Technique / Propagande</h2>
+            </div>
+            <div class="stage">
+              <p class="t t-b">
+                <span>Le café</span>
+                <span>comme un</span>
+                <span class="accent">métier d’art</span>
+                <span class="meta">Huila · 1750 m</span>
+              </p>
+            </div>
+            <p class="card__why">
+              Aligné gauche, Syne tight, accent bean sur la dernière ligne.
+              Plus SaaS-luxe / Terminal — fort pour le positionnement dual
+              marque + tech.
+            </p>
+            <div class="card__tokens">
+              <span class="chip">Syne 600</span>
+              <span class="chip">left 8%</span>
+              <span class="chip">bean accent</span>
+              <span class="chip">mono meta</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__meta">
+              <span class="card__id">C</span>
+              <h2 class="card__name">Signature asymétrique</h2>
+            </div>
+            <div class="stage">
+              <p class="t t-c">
+                <span class="lead">Le café</span>
+                <span class="rest">comme un métier d’art</span>
+                <span class="rule" aria-hidden="true"></span>
+              </p>
+            </div>
+            <p class="card__why">
+              Ancré bas-gauche (zone plus calme sous la pale). Hiérarchie
+              lead / italic, filet ember. Laisse respirer le canvas — très
+              “maison de torréfaction”.
+            </p>
+            <div class="card__tokens">
+              <span class="chip">Instrument Serif</span>
+              <span class="chip">bottom-left</span>
+              <span class="chip">ember rule</span>
+              <span class="chip">italic rest</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__meta">
+              <span class="card__id">D</span>
+              <h2 class="card__name">Voile de lisibilité</h2>
+            </div>
+            <div class="stage">
+              <div class="t-d-wrap">
+                <div class="t-d-veil" aria-hidden="true"></div>
+                <p class="t t-d">
+                  <span>Le café</span>
+                  <span>comme un</span>
+                  <span><em>métier d’art</em></span>
+                </p>
+              </div>
+            </div>
+            <p class="card__why">
+              Voile radial roast derrière le bloc (pas une card). Cormorant
+              actuel, mais contraste AA garanti. Le plus sûr pour le burst
+              caractère sur grains clairs.
+            </p>
+            <div class="card__tokens">
+              <span class="chip">Cormorant</span>
+              <span class="chip">radial veil</span>
+              <span class="chip">center</span>
+              <span class="chip">AA fort</span>
+            </div>
+          </article>
+
+          <article class="card">
+            <div class="card__meta">
+              <span class="card__id">E</span>
+              <h2 class="card__name">Mixte serif / sans</h2>
+            </div>
+            <div class="stage">
+              <p class="t t-e">
+                <span class="big">Le café</span>
+                <span class="small"
+                  >comme un métier d’art<span class="dot"></span
+                ></span>
+              </p>
+            </div>
+            <p class="card__why">
+              Droite, italic display + ligne Outfit tracked. Point bean comme
+              signature. Élégant, peu de lignes — idéal si on raccourcit les
+              beats au burst.
+            </p>
+            <div class="card__tokens">
+              <span class="chip">Cormorant italic</span>
+              <span class="chip">Outfit caps</span>
+              <span class="chip">right 8%</span>
+              <span class="chip">bean dot</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="panel" id="panel-cursors">
+        <div
+          class="cursor-lab"
+          id="cursorLab"
+          data-cursor="grain"
+        >
+          <p class="cursor-lab__hint">Survole cette zone · teste le lien</p>
+          <a href="#cursors" id="hotLink">Nos cafés</a>
+        </div>
+
+        <div class="pickers" id="cursorPickers">
+          <button type="button" class="pick is-on" data-cursor="grain">
+            <strong>1 · Grain</strong>
+            <span>Disque paper, scale + bean au hover lien. Sobre, premium.</span>
+          </button>
+          <button type="button" class="pick" data-cursor="cross">
+            <strong>2 · Crosshair</strong>
+            <span>Croix fine + point bean. Lecture “atelier / précision”.</span>
+          </button>
+          <button type="button" class="pick" data-cursor="ring">
+            <strong>3 · Anneau difference</strong>
+            <span>Cercle mix-blend — s’adapte aux grains clairs/foncés.</span>
+          </button>
+          <button type="button" class="pick" data-cursor="blade">
+            <strong>4 · Pale</strong>
+            <span>Équerre métal (métaphore pale). Rotation légère au hover.</span>
+          </button>
+          <button type="button" class="pick" data-cursor="label">
+            <strong>5 · Label</strong>
+            <span>Pastille mono “SCROLL” → “LIRE”. Très Terminal / lab.</span>
+          </button>
+        </div>
+      </section>
+
+      <p class="footer-note">
+        Frames inutiles retirées : desktop <strong>162</strong> (était 311),
+        mobile <strong>99</strong> (était 187). Réponds avec le combo voulu —
+        ex. <code>Titres D + Curseur 1</code> — et on l’intègre.
+      </p>
+    </div>
+
+    <div class="cx" id="cx" aria-hidden="true"></div>
+
+    <script>
+      const tabs = document.querySelectorAll('.tabs button')
+      const panels = {
+        titles: document.getElementById('panel-titles'),
+        cursors: document.getElementById('panel-cursors'),
+      }
+      tabs.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabs.forEach((b) => b.classList.remove('is-on'))
+          btn.classList.add('is-on')
+          Object.entries(panels).forEach(([key, el]) => {
+            el.classList.toggle('is-on', key === btn.dataset.tab)
+          })
+        })
+      })
+
+      const lab = document.getElementById('cursorLab')
+      const cx = document.getElementById('cx')
+      const picks = document.querySelectorAll('.pick')
+      const hot = document.getElementById('hotLink')
+      let mode = 'grain'
+      let active = false
+
+      function renderCursor() {
+        cx.className = 'cx' + (active ? ' is-on' : '')
+        if (mode === 'grain') cx.innerHTML = '<div class="cx-grain" id="cxInner"></div>'
+        if (mode === 'cross')
+          cx.innerHTML = '<div class="cx-cross" id="cxInner"><i></i></div>'
+        if (mode === 'ring') cx.innerHTML = '<div class="cx-ring" id="cxInner"></div>'
+        if (mode === 'blade') cx.innerHTML = '<div class="cx-blade" id="cxInner"></div>'
+        if (mode === 'label')
+          cx.innerHTML =
+            '<div class="cx-label" id="cxInner"><b></b><span>Scroll</span></div>'
+      }
+
+      picks.forEach((pick) => {
+        pick.addEventListener('click', () => {
+          picks.forEach((p) => p.classList.remove('is-on'))
+          pick.classList.add('is-on')
+          mode = pick.dataset.cursor
+          lab.dataset.cursor = mode
+          renderCursor()
+        })
+      })
+
+      lab.addEventListener('mouseenter', () => {
+        active = true
+        renderCursor()
+        cx.classList.add('is-on')
+      })
+      lab.addEventListener('mouseleave', () => {
+        active = false
+        cx.classList.remove('is-on')
+      })
+      lab.addEventListener('mousemove', (e) => {
+        cx.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`
+      })
+
+      hot.addEventListener('mouseenter', () => {
+        const inner = document.getElementById('cxInner')
+        if (inner) inner.classList.add('is-hot')
+      })
+      hot.addEventListener('mouseleave', () => {
+        const inner = document.getElementById('cxInner')
+        if (inner) inner.classList.remove('is-hot')
+      })
+
+      renderCursor()
+    </script>
+  </body>
+</html>

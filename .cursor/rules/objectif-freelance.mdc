@@ -1,0 +1,35 @@
+---
+description: Objectif freelance premium (Maison Bastide = lab portfolio)
+alwaysApply: true
+---
+
+# Objectif utilisateur
+
+Formation / portfolio pour livrer des **sites marketing premium** en freelance
+et se démarquer. Maison Bastide = **faux brief traité comme un vrai deliverable**
+(pièce portfolio), pas un client réel.
+
+## Positionnement
+
+- **Les deux** : sites marque (luxe, food, culture) ET SaaS/tech type Terminal
+- **Offre** : package complet — brand + site + perf/a11y (pas “juste du motion”)
+- **Tarif moyen terme** : **2–4k €** par site
+- **Stack assumée** : Vite + React + GSAP (+ ScrollTrigger, Lenis, canvas frames)
+
+## Référence de niveau
+
+https://terminal-industries.com/ (Propagande-like) : scroll cinématique,
+canvas/frames, typo tight, sections orchestrées.
+
+## Priorités lab (dans l’ordre)
+
+1. **(a)** Finir Maison Bastide au niveau case study vendable
+2. **(b)** Documenter la méthode (prompts + checklist livrable)
+3. **(c)** Enchaîner un 2e brief plus SaaS/tech
+
+## Attitude agent
+
+- Traiter chaque demande comme un cran vers un deliverable 2–4k
+- Garder React/Vite/GSAP ; ne pas pousser Next/Webflow sauf demande
+- Expliquer trade-offs perf/mobile/a11y quand ça justifie le craft
+- Ne pas simplifier vers du template SaaS générique

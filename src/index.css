@@ -1,0 +1,67 @@
+:root {
+  --roast: #141110;
+  --bean: #a8b98a;
+  --paper: #ede9e3;
+  --ash: #6b6560;
+  --ember: #8a4b2a;
+  /* Roasted coffee brown — hero rail / accents */
+  --coffee: #7a4630;
+  --coffee-soft: #a36b4a;
+  /* AA-safe muted text on dark backgrounds (≥4.5:1 on --roast) */
+  --mist: #a39e98;
+
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-signature: 'Instrument Serif', 'Cormorant Garamond', serif;
+  --font-body: 'Outfit', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+
+  font-family: var(--font-body);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--paper);
+  background-color: var(--roast);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: auto;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+img,
+canvas {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
