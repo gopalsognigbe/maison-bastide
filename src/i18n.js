@@ -34,7 +34,9 @@ const copy = {
     heroAria: 'Héros',
     heroSr:
       'Maison Bastide — Le café comme un métier d’art. Parlons de votre prochain café.',
-    heroScroll: 'Faites défiler',
+    heroScroll: 'Un geste',
+    soundPlay: 'Activer le son',
+    soundMute: 'Couper le son',
     heroTechOrigin: 'HUILA · COLOMBIE',
     heroTechDetail: '1750 M · LAVÉ · CATURRA',
     beats: {
@@ -97,7 +99,9 @@ const copy = {
     heroAria: 'Hero',
     heroSr:
       'Maison Bastide — Coffee as a craft. Let’s talk about your next coffee.',
-    heroScroll: 'Scroll',
+    heroScroll: 'One gesture',
+    soundPlay: 'Turn sound on',
+    soundMute: 'Mute sound',
     heroTechOrigin: 'HUILA · COLOMBIA',
     heroTechDetail: '1750 M · WASHED · CATURRA',
     beats: {

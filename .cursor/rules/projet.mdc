@@ -7,11 +7,12 @@ alwaysApply: true
 - Vite + React 18, JavaScript (pas de TypeScript pour ce projet)
 - GSAP 3.12 + ScrollTrigger (npm, pas de CDN)
 - Lenis (npm : lenis)
-- Héros : `Hero.jsx` + `hero-engine.js` (scrub vidéo). Reste de la page dans `App.jsx`.
+- Héros : `Hero.jsx` + `hero-chapters.js` (défaut) / `hero-engine.js` (`?scrub=1`). Reste de la page dans `App.jsx`.
 
-# Héros (scrub Terminal)
-- Voir règle `hero-video-scrub.mdc` — scroll → `video.currentTime`, all-intra.
-- Aucun useState dans le moteur. Mount `createHeroEngine` / unmount `destroy()`.
+# Héros (chapitres par défaut)
+- Voir règle `hero-video-scrub.mdc` — défaut = clips `play()` step-lock (`hero-chapters.js`).
+- Scrub Terminal : `?scrub=1` (`hero-engine.js`, all-intra).
+- Aucun useState dans les moteurs. Mount `createHeroChapters` / `createHeroEngine`, unmount `destroy()`.
 - Pas de canvas, ImageBitmap, frames JPG, ni loader de frames.
 
 # Design tokens

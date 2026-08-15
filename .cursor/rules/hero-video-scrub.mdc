@@ -1,13 +1,45 @@
 ---
-description: Technique héros Terminal — scrub vidéo scroll-driven (Maison Bastide + signature freelance)
+description: Technique héros — chapitres play-lock (défaut) + scrub Terminal (?scrub=1)
 alwaysApply: true
 ---
 
-# Hero = scrub vidéo (pas frames, pas segments play/pause)
+# Héros Maison Bastide
+
+Deux moteurs. **Défaut = chapitres** (un geste → un clip `play()`).  
+Scrub Terminal : `?scrub=1`.
+
+## Chapitres (défaut)
+
+Le scroll **ne pilote plus le temps**. Un geste joue un clip (`play()`), dans un sens ou dans l’autre :
+
+```
+idle --down--> playing --ended--> ended (freeze + titre suivant)
+ended --down--> clip suivant
+ended --up----> reversing (clip actuel, fichier *-rev.mp4) --> idle
+idle(i>0) --up--> reversing du clip précédent
+done @ top --up--> reversing S4 → T4 (pas S5)
+```
+
+- Pendant `playing` / `reversing` : input verrouillé
+- Reverse = `play()` d’un encode inversé, pas `playbackRate = -1` ni seek GOP
+- Après `ended` : hard cut vers le titre du clip suivant (index inchangé)
+- Après T5 (fin de S4) : `done` — scroll bas → `#metier`, scroll haut → T4
+- Wipe GSAP calé sur le temps *original* du clip (même en arrière)
+- Audio **muxé** dans le MP4 aller (S1–S4) ; S5 silencieux, court (~1,6 s)
+- Scroll back : SFX paddle (`beans-paddle.wav`) via Web Audio, calé sur `revSfxAt`
+- Wipe GSAP au `paddleCue` via `requestVideoFrameCallback` (pas `timeupdate`)
+- Deux `<video>` ping-pong (`src/hero-chapters.js`)
+- Encodage **GOP normal** (pas all-intra) dans `public/video/chapters/s1–s5.mp4`
+- SFX trim 0,8 s → `public/sfx/beans-paddle.wav` (re-authoring)
+- Unlock son : premier geste → `muted = false` sur les deux lecteurs
+- `prefers-reduced-motion` : posters + T5, pas de chaîne
+- Échappatoire : liens `#…` (skip, nav) déverrouillent
+
+Fallback live : `http://localhost:5173/?scrub=1`
+
+## Scrub Terminal (`?scrub=1`)
 
 Référence UX : https://terminal-industries.com/
-
-## Principe
 
 Le scroll mappe une timeline vidéo continue. La vidéo reste **en pause** ;
 on ne fait que seeker :
@@ -16,42 +48,21 @@ on ne fait que seeker :
 scroll progress 0→1  →  video.currentTime = progress × duration
 ```
 
-- Piste de scroll : section `.hero` haute (ex. ~320–380 vh)
-- Viewport : `.hero__sticky` 100 vh + `<video>` full-bleed (`object-fit: cover`)
-- ScrollTrigger `scrub` sur la section ; Lenis pour le smooth wheel
-- Seek via rAF (éviter de spam `currentTime` plus fort que ~1 frame)
-- Titres / rail / SFX = overlays calés sur des **seuils de progress**, pas sur `play()`
+- Piste de scroll : `.hero` ~220 vh (180 vh mobile)
+- `src/hero-engine.js` + `public/video/hero-scrub.mp4` (all-intra, muted)
+- Seek via rAF ; titres calés sur des seuils de progress
 
-## Encodage scrub (critique)
-
-Un MP4 “normal” (GOP long, P/B-frames) **saccade** au seek.
-Encoder **all-intra** (1 keyframe = 1 image) :
+Encodage all-intra (si on régénère le master) :
 
 ```bash
-# Desktop — piqué
 ffmpeg -i hero.mp4 -an -c:v libx264 -pix_fmt yuv420p -profile:v high \
   -preset medium -crf 17 -g 1 -keyint_min 1 -sc_threshold 0 -bf 0 \
   -movflags +faststart public/video/hero-scrub.mp4
-
-# Mobile retina : même 1080 all-intra (720p était trop soft).
-# Fichier : public/video/hero-scrub.mp4 partout.
 ```
 
-Stage mobile à 100% (pas d’overscan 108% — ça floute).
+## Interdits
 
-## Architecture code (ce projet)
-
-- `src/hero-engine.js` : `createHeroEngine(root)` / `destroy()` — **aucun useState**
-- `src/Hero.jsx` : mount engine, markup video + overlays
-- `App.jsx` : Lenis global + reste de la page
-
-## Interdits (héros)
-
-- Pas d’extraction de frames / canvas / `ImageBitmap` / loader de préchargement frames
-- Pas de scrub “segment play→pause verrouillé” (ce n’est pas Terminal)
-- Pas de piste audio vidéo pendant le scrub (muted) ; SFX overlay optionnel, désactivé tant que non redemandé
-
-## Mobile
-
-- Fichier dédié plus petit ; drift caméra / effets lourds réduits ou off
-- `playsinline` + `muted` ; respecter `prefers-reduced-motion` (pas de scrub)
+- Pas d’extraction de frames / canvas / `ImageBitmap`
+- Ne pas mélanger seek all-intra et `play()` sur le **même** fichier
+- Pas de reverse pendant un chapitre
+- `playsinline` + `muted` au départ ; respecter `prefers-reduced-motion`

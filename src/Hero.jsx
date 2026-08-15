@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react'
 import { createHeroEngine, HERO_BEAT_TIMING } from './hero-engine'
+import { createHeroChapters, isChapterHero, HERO_CHAPTERS } from './hero-chapters'
 import { t } from './i18n'
 
 function BeatLines({ lines }) {
@@ -45,27 +46,47 @@ export default function Hero({ lang, onLoadProgress, onReady }) {
     lines: copy.beats[beat.id],
   }))
 
+  const chapters = isChapterHero()
+
   useEffect(() => {
-    const engine = createHeroEngine(rootRef.current, {
+    const options = {
       onProgress: (pct) => onLoadProgressRef.current?.(pct),
       onReady: () => onReadyRef.current?.(),
-    })
+    }
+    const engine = chapters
+      ? createHeroChapters(rootRef.current, options)
+      : createHeroEngine(rootRef.current, options)
     return () => engine.destroy()
-  }, [])
+  }, [chapters])
 
   return (
-    <section ref={rootRef} className="hero" aria-label={copy.heroAria}>
+    <section
+      ref={rootRef}
+      className={chapters ? 'hero hero--chapters' : 'hero'}
+      aria-label={copy.heroAria}
+    >
       <div className="hero__sticky">
         <div className="hero__stage" data-hero-stage>
           <video
-            className="hero__video"
-            data-hero-video
+            className="hero__video is-front"
+            data-hero-video="0"
             muted
             playsInline
             preload="auto"
             poster="/poster.jpg"
             aria-hidden="true"
           />
+          {chapters ? (
+            <video
+              className="hero__video is-back"
+              data-hero-video="1"
+              muted
+              playsInline
+              preload="auto"
+              poster="/poster.jpg"
+              aria-hidden="true"
+            />
+          ) : null}
         </div>
         <div className="hero__gradient" aria-hidden="true" />
 
@@ -92,11 +113,78 @@ export default function Hero({ lang, onLoadProgress, onReady }) {
           {copy.heroScroll}
         </p>
 
-        <div className="hero__rail" aria-hidden="true">
-          <div className="hero__rail-track">
-            <div className="hero__rail-fill" data-hero-rail-fill />
+        {chapters ? (
+          <button
+            type="button"
+            className="hero__sound"
+            data-hero-sound
+            aria-pressed="false"
+            aria-label={copy.soundPlay}
+            data-label-off={copy.soundPlay}
+            data-label-on={copy.soundMute}
+          >
+            <span className="hero__sound-mark" aria-hidden="true">
+              <svg
+                className="hero__sound-on"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M15.2 9.2a4 4 0 0 1 0 5.6M17.6 7a7 7 0 0 1 0 10"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <svg
+                className="hero__sound-off"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M16 10.5 20 14.5M20 10.5 16 14.5"
+                  stroke="currentColor"
+                  strokeWidth="1.3"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
+            <span className="hero__sound-copy">
+              <span className="hero__sound-on">ON</span>
+              <span className="hero__sound-off">OFF</span>
+            </span>
+          </button>
+        ) : null}
+
+        {chapters ? (
+          <div className="hero__dots" aria-hidden="true" data-hero-dots>
+            {HERO_CHAPTERS.map((chapter, i) => (
+              <span
+                key={chapter.id}
+                className={i === 0 ? 'hero__dot is-current' : 'hero__dot'}
+                data-hero-dot={chapter.id}
+              />
+            ))}
           </div>
-        </div>
+        ) : (
+          <div className="hero__rail" aria-hidden="true">
+            <div className="hero__rail-track">
+              <div className="hero__rail-fill" data-hero-rail-fill />
+            </div>
+          </div>
+        )}
       </div>
     </section>
   )

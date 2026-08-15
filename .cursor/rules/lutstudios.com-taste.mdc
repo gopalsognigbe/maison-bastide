@@ -1,0 +1,26 @@
+---
+description: Design taste DNA — lutstudios.com (spatial multi-loop video site)
+alwaysApply: false
+globs:
+---
+
+# LUT Studios taste (reference)
+
+Source: https://lutstudios.com/ · full notes: `lutstudios.com.md`
+
+## Do
+- Treat the site as a **set**: fixed 100vh shell, scene changes via **looping plates**, not a long marketing scroll
+- UI chrome = sparse white labels (Outfit + **wide tracking** ~0.28em on nav) over cinematic media
+- Prefer **diegetic content** (UI inside the world) when the plate can carry it
+- Gate with a serious loader — assets are the product
+
+## Don’t
+- Don’t confuse this with Terminal scrub (`progress → currentTime` on one film) — LUT is **room cuts**
+- Don’t add card grids / purple CTAs / stat strips on top of a heavy plate
+- Don’t use narrow default tracking on all-caps nav over bright footage
+
+## Tokens (approx)
+- Void: `#0A0A0A`
+- UI: `#FFFFFF` Outfit 700 · 18px · letter-spacing ~5px (nav)
+- Hint: 12px · `*swipe to discover`
+- Media: multi MP4 loops ~5s; pager dots

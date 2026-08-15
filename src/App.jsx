@@ -166,6 +166,10 @@ export default function App() {
           wheelMultiplier: 0.85,
           touchMultiplier: 1.1,
         })
+        window.__maisonLenis = lenis
+        if (document.documentElement.classList.contains('app--hero-lock')) {
+          lenis.stop()
+        }
         lenis.on('scroll', ScrollTrigger.update)
         lenis.scrollTo(0, { immediate: true })
         window.scrollTo(0, 0)
@@ -243,6 +247,7 @@ export default function App() {
       cancelAnimationFrame(raf)
       if (tickerFn) gsap.ticker.remove(tickerFn)
       gsapCtx?.revert()
+      if (window.__maisonLenis === lenis) delete window.__maisonLenis
       lenis?.destroy()
       document.documentElement.classList.remove('app--reduced-motion')
     }
