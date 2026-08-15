@@ -1,0 +1,23 @@
+---
+description: Pipeline Vast.ai RTX 5090 32 Go — stills, films, 3D pour les 6 briefs
+globs: lab/**
+alwaysApply: false
+---
+
+# Prod GPU (Vast + RTX 5090 32 Go)
+
+Package = **monde généré + site**. Détail : `lab/pipeline-vast.md`.
+
+## Capacité (32 Go — plus du 12 Go GGUF)
+
+- **Stills** : Flux Dev FP8/FP16, 1024–1536, LoRA + ControlNet.
+- **Vidéo** : I2V **8–12 s**, 720–1080, puis all-intra. Mobile site = 720p (poids).
+- **3D** : optionnel (mesh → Blender) si les loops I2V ne tiennent pas le même lieu. Le site = MP4, pas Three.js.
+
+## Par brief
+
+- 01–02 : stills cohérents (visages OK si LoRA lock).
+- 03 : film réel Bastide + stills/OG gen.
+- 04–06 : **toi** fournis films / set 3D — hausse de prix.
+
+Stop instance après le batch (~0,32–0,45 $/h).

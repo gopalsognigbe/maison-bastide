@@ -12,7 +12,7 @@ et se démarquer. Maison Bastide = **faux brief traité comme un vrai deliverabl
 ## Positionnement
 
 - **Les deux** : sites marque (luxe, food, culture) ET SaaS/tech type Terminal
-- **Offre** : package complet — brand + site + perf/a11y (pas “juste du motion”)
+- **Offre** : package **monde (stills/film/3D GPU) + site + perf/a11y**
 - **Tarif moyen terme** : **2–4k €** par site
 - **Stack assumée** : Vite + React + GSAP (+ ScrollTrigger, Lenis, scrub vidéo)
 
@@ -23,9 +23,12 @@ canvas/frames, typo tight, sections orchestrées.
 
 ## Priorités lab (dans l’ordre)
 
-1. **(a)** Finir Maison Bastide au niveau case study vendable
-2. **(b)** Documenter la méthode (prompts + checklist livrable)
-3. **(c)** Enchaîner un 2e brief plus SaaS/tech
+Parcours 6 briefs : `lab/README.md` + `lab/briefs/`. Ne pas sauter les crans.
+
+1. **(a)** Finir **03 Maison Bastide** au niveau case study vendable
+2. **(b)** Case study méthode, puis **01–02** si besoin de pièces “volume 1–2k”
+3. **(c)** **04 Northyard** (SaaS/tech) — 2ᵉ pilier portfolio
+4. Ensuite seulement 05 spatial / 06 prospectus (10–22k)
 
 ## Attitude agent
 

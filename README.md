@@ -1,13 +1,19 @@
 # Maison Bastide
 
-Site vitrine — torréfaction artisanale.
+Faux brief, vrai livrable. Site marque d’un micro-torréfacteur (Sud-Ouest).  
+**Live :** https://maison-bastide.vercel.app/  
+**Étude de cas (à envoyer avant un call) :** [lab/briefs/03-case-study.md](lab/briefs/03-case-study.md)
+
+## Ce que c’est
+
+Le film de torréfaction **avance avec le scroll** (le film reste en pause ; on change juste le temps).  
+Dessous : métier, trois origines, contact. FR / EN.
+
+Fourchette affichée : **3 500–4 500 € HT**.
 
 ## Stack
 
-- Vite + React 18 (JavaScript)
-- Frames extraites via ffmpeg → `public/frames/`
-- GSAP + ScrollTrigger (à venir)
-- Lenis (à venir)
+Vite · React 18 · GSAP + ScrollTrigger · Lenis · vidéo all-intra (`public/video/`).
 
 ## Démarrer
 
@@ -15,15 +21,3 @@ Site vitrine — torréfaction artisanale.
 npm install
 npm run dev
 ```
-
-## Extraire les frames
-
-```bash
-# Desktop (hero.mp4 → public/frames)
-npm run frames
-
-# Mobile 15 fps (hero-mobile.mp4 → public/frames-mobile)
-npm run frames:mobile
-```
-
-Met à jour les `count` dans `src/App.jsx` si les totaux changent.

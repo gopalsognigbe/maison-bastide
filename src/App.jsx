@@ -326,6 +326,10 @@ export default function App() {
         </div>
       )}
 
+      <a className="skip-link" href="#metier">
+        {copy.skipToContent}
+      </a>
+
       <nav className="nav" aria-label={copy.navLabel}>
         <div className="nav__inner">
           <a href="/" className="nav__logo">
@@ -360,7 +364,16 @@ export default function App() {
       />
 
       <section className="metier reveal" id="metier">
-        <div className="metier__inner js-zoom">
+        <div className="metier__inner">
+          <figure className="metier__photo js-zoom js-reveal">
+            <img
+              src="/stills/metier.jpg"
+              alt={copy.metierPhotoAlt}
+              width={1600}
+              height={1066}
+              loading="lazy"
+            />
+          </figure>
           <p className="section-label js-reveal">{copy.metierLabel}</p>
           <h2 className="metier__title">
             <span className="js-reveal">{copy.metierTitle1}</span>
@@ -377,7 +390,15 @@ export default function App() {
 
           <ul className="origines__list">
             {copy.origines.map((item) => (
-              <li className="origine js-reveal js-zoom" key={item.name}>
+              <li className="origine js-reveal" key={item.name}>
+                <img
+                  className="origine__photo js-zoom"
+                  src={item.photo}
+                  alt={item.photoAlt}
+                  width={1600}
+                  height={1066}
+                  loading="lazy"
+                />
                 <h3 className="origine__name">{item.name}</h3>
                 <p className="origine__note">{item.note}</p>
                 <p className="origine__detail">{item.detail}</p>

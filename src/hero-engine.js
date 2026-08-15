@@ -351,11 +351,9 @@ export function createHeroEngine(root, options = {}) {
   }
 
   const bindSources = () => {
-    const mobile = isMobileHero()
-    const src = mobile
-      ? '/video/hero-mobile-scrub.mp4'
-      : '/video/hero-scrub.mp4'
-    const poster = mobile ? '/poster-mobile.jpg' : '/poster.jpg'
+    /* Same 1080 all-intra on phone: 720p looked soft on retina. */
+    const src = '/video/hero-scrub.mp4'
+    const poster = isMobileHero() ? '/poster-mobile.jpg' : '/poster.jpg'
     if (video.dataset.boundSrc === src) return
     video.dataset.boundSrc = src
     video.poster = poster

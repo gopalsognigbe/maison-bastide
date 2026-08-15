@@ -7,9 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "frames": "bash scripts/extract-frames.sh desktop",
-    "frames:mobile": "bash scripts/extract-frames.sh mobile"
+    "preview": "vite preview"
   },
   "dependencies": {
     "gsap": "^3.12.5",

@@ -5,6 +5,22 @@
   overflow-x: clip;
 }
 
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: -4rem;
+  z-index: 300;
+  padding: 0.65rem 1rem;
+  background: var(--paper);
+  color: var(--roast);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.skip-link:focus {
+  top: 1rem;
+}
+
 /* ——— Loader A2 (video buffer) ——— */
 .loader {
   position: fixed;
@@ -296,6 +312,12 @@ html.app--loading body {
   object-position: center;
   background: var(--roast);
   pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .hero__video {
+    object-position: 50% 40%;
+  }
 }
 
 .hero__gradient {
@@ -632,6 +654,20 @@ html.app--hero-scroll::-webkit-scrollbar {
   text-align: center;
 }
 
+.metier__photo {
+  margin: 0 0 2.5rem;
+  overflow: hidden;
+  border-radius: 2px;
+}
+
+.metier__photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .metier__title {
   font-family: var(--font-display);
   font-weight: 500;
@@ -689,6 +725,13 @@ html.app--hero-scroll::-webkit-scrollbar {
   border-bottom: 1px solid rgba(237, 233, 227, 0.15);
 }
 
+.origine__photo {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  border-radius: 2px;
+}
+
 .origine__name {
   font-family: var(--font-display);
   font-weight: 500;
@@ -714,10 +757,16 @@ html.app--hero-scroll::-webkit-scrollbar {
 
 @media (min-width: 768px) {
   .origine {
-    grid-template-columns: 1.1fr 1fr 1.2fr;
-    align-items: baseline;
+    grid-template-columns: 10.5rem 1.1fr 1fr 1.2fr;
+    align-items: center;
     gap: 1.5rem;
     padding: 2.25rem 0;
+  }
+
+  .origine__photo {
+    width: 10.5rem;
+    height: 7rem;
+    aspect-ratio: auto;
   }
 
   .origine__detail {
@@ -774,6 +823,16 @@ html.app--hero-scroll::-webkit-scrollbar {
 .cta__button:hover {
   background: var(--ember);
   color: var(--paper);
+}
+
+.contact .cta__button {
+  background: var(--paper);
+  color: var(--roast);
+}
+
+.contact .cta__button:hover {
+  background: var(--bean);
+  color: var(--roast);
 }
 
 /* ——— Contact ——— */
