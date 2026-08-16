@@ -537,6 +537,7 @@ html.app--hero-lock body {
   color: rgba(237, 233, 227, 0.55);
 }
 
+/* Sound pill: glass frame, same family as nav */
 .hero__sound {
   position: absolute;
   z-index: 6;
@@ -544,20 +545,28 @@ html.app--hero-lock body {
   bottom: clamp(1.4rem, 3.8vh, 2.6rem);
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.55rem;
   margin: 0;
-  padding: 0.35rem 0;
-  border: 0;
-  background: transparent;
-  color: rgba(237, 233, 227, 0.55);
+  padding: 0.55rem 0.85rem 0.55rem 0.7rem;
+  border: 1px solid rgba(237, 233, 227, 0.42);
+  border-radius: 999px;
+  background: rgba(20, 17, 16, 0.62);
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  color: var(--paper);
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  font-weight: 400;
-  letter-spacing: 0.22em;
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.2em;
   line-height: 1;
   text-transform: uppercase;
   cursor: pointer;
   appearance: none;
+  box-shadow: 0 8px 28px rgba(20, 17, 16, 0.35);
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease,
+    color 0.25s ease;
 }
 
 .hero__sound-mark,
@@ -567,8 +576,8 @@ html.app--hero-lock body {
 }
 
 .hero__sound-mark {
-  width: 0.95rem;
-  height: 0.95rem;
+  width: 1.15rem;
+  height: 1.15rem;
 }
 
 .hero__sound-mark svg {
@@ -578,7 +587,7 @@ html.app--hero-lock body {
 }
 
 .hero__sound-copy {
-  min-width: 2.2em;
+  min-width: 2.4em;
   justify-items: start;
 }
 
@@ -597,6 +606,8 @@ html.app--hero-lock body {
 
 .hero__sound.is-on {
   color: var(--paper);
+  border-color: rgba(168, 185, 138, 0.7);
+  background: rgba(20, 17, 16, 0.72);
 }
 
 .hero__sound.is-on .hero__sound-on {
@@ -608,7 +619,8 @@ html.app--hero-lock body {
 }
 
 .hero__sound:hover {
-  color: var(--paper);
+  border-color: var(--paper);
+  background: rgba(20, 17, 16, 0.8);
 }
 
 .hero__sound:focus-visible {
@@ -1148,9 +1160,8 @@ html.app--hero-scroll::-webkit-scrollbar {
     right: max(0.85rem, env(safe-area-inset-right, 0px));
     bottom: calc(0.85rem + env(safe-area-inset-bottom, 0px));
     min-height: 44px;
-    min-width: 44px;
-    padding: 0.55rem 0.45rem;
-    gap: 0.35rem;
+    padding: 0.55rem 0.85rem 0.55rem 0.7rem;
+    gap: 0.4rem;
     -webkit-tap-highlight-color: transparent;
   }
 

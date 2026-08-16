@@ -440,12 +440,23 @@ export function createHeroChapters(root, options = {}) {
     applySound()
   }
 
+  const armSound = () => {
+    if (soundOn || destroyed) return
+    soundOn = true
+    unlockAudio()
+  }
+
   const onSoundToggle = (event) => {
     event.preventDefault()
     event.stopPropagation()
     soundOn = !soundOn
     if (soundOn) unlockAudio()
     else applySound()
+  }
+
+  const onSitePointer = (event) => {
+    if (event.target.closest?.('[data-hero-sound]')) return
+    armSound()
   }
 
   fetch('/sfx/beans-paddle.wav')
@@ -944,6 +955,7 @@ export function createHeroChapters(root, options = {}) {
   })
   window.addEventListener('keydown', onKey)
   root.addEventListener('pointerdown', onHeroPointer)
+  document.addEventListener('pointerdown', onSitePointer)
   document.addEventListener('click', onHashNav)
   soundBtn?.addEventListener('click', onSoundToggle)
 
@@ -968,6 +980,7 @@ export function createHeroChapters(root, options = {}) {
       window.removeEventListener('touchend', onTouchEnd, { capture: true })
       window.removeEventListener('keydown', onKey)
       root.removeEventListener('pointerdown', onHeroPointer)
+      document.removeEventListener('pointerdown', onSitePointer)
       document.removeEventListener('click', onHashNav)
       soundBtn?.removeEventListener('click', onSoundToggle)
       videos.forEach((video) => {

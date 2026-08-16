@@ -130,15 +130,13 @@ export default function Hero({ lang, onLoadProgress, onReady }) {
                 fill="none"
               >
                 <path
-                  d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinejoin="round"
+                  d="M3.8 9.2v5.6h3.5L12.2 19V5L7.3 9.2H3.8Z"
+                  fill="currentColor"
                 />
                 <path
-                  d="M15.2 9.2a4 4 0 0 1 0 5.6M17.6 7a7 7 0 0 1 0 10"
+                  d="M15.4 8.8a4.2 4.2 0 0 1 0 6.4M18 6.6a7.2 7.2 0 0 1 0 10.8"
                   stroke="currentColor"
-                  strokeWidth="1.3"
+                  strokeWidth="1.9"
                   strokeLinecap="round"
                 />
               </svg>
@@ -148,15 +146,13 @@ export default function Hero({ lang, onLoadProgress, onReady }) {
                 fill="none"
               >
                 <path
-                  d="M4 10v4h3.2L12 18.5V5.5L7.2 10H4Z"
-                  stroke="currentColor"
-                  strokeWidth="1.3"
-                  strokeLinejoin="round"
+                  d="M3.8 9.2v5.6h3.5L12.2 19V5L7.3 9.2H3.8Z"
+                  fill="currentColor"
                 />
                 <path
-                  d="M16 10.5 20 14.5M20 10.5 16 14.5"
+                  d="M16 9.2 21 14.8M21 9.2 16 14.8"
                   stroke="currentColor"
-                  strokeWidth="1.3"
+                  strokeWidth="1.9"
                   strokeLinecap="round"
                 />
               </svg>
